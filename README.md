@@ -1,2 +1,2 @@
 # inforiot-frontend
-A React application that keeps users informed about current events.
+A React application for reading the news, vetted for credibility and bias, to cure all the fake news.
