@@ -25,6 +25,7 @@ import {faHeart, faStarOfLife} from '@fortawesome/free-solid-svg-icons';
 
 import { getArticles } from '../../service/news';
 import DataItem from '../../component/dataItem';
+import FeatItem from '../../component/featItem';
 
 
 const deviceWidth = Dimensions.get("window").width;
@@ -38,28 +39,18 @@ export default class Tab1 extends Component {
 
   componentDidMount() {
       getArticles().then(data => {
-        this.setState({
+          this.setState({
           isLoading: false,
-          data: data,
+          data: data
         });
       }, error => {
         Alert.alert('Error', 'Something went wrong!');
       }
       );
-}
+  }
 
   render() {
     console.log(this.state.data);
-
-        var first =  function(array, n) {
-      if (array == null) 
-      return void 0;
-    if (n == null) 
-      return array[0];
-    if (n < 0)
-      return [];
-    return array.slice(0, n);
-  };
 
     let view = this.state.isLoading ? (
       <View>
@@ -81,25 +72,7 @@ export default class Tab1 extends Component {
       <Text style={{marginTop: 10}}>Please Wait...</Text>
       </View>
     ) : (
-      <Card style={{flex: 0, marginLeft: 10, marginRight: 10}}>
-            <CardItem>
-              <Left>
-                <Body>
-                  <Text>{first(this.state.data).source.name}</Text>
-                  <Text note>{first(this.state.data).publishedAt}</Text>
-                </Body>
-              </Left>
-            </CardItem>
-            <CardItem>
-              <Body>
-                <Image source={{uri: first(this.state.data).urlToImage}} style={{height: 200, width: 370, flex: 1, alignSelf: 'center', resizeMode: 'cover' }}/>
-                <Text style={{ textDecorationLine: 'underline', color: '#FA255E', fontSize: 16, marginTop: 10}}>{first(this.state.data).title}</Text>
-                <Text numberOfLines={3} style={{marginBottom: 5}}>
-                  {first(this.state.data).content}
-                </Text>
-              </Body>
-            </CardItem>
-            </Card>
+      <FeatItem data={this.state.data} />
     );
 
     return (

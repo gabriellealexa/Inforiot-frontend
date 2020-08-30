@@ -1,6 +1,7 @@
 /* eslint-disable prettier/prettier */
 
 import React, {Component} from 'react';
+import { Image } from 'react-native';
 import {Container, Header, Content, Tab, Tabs, Body, Title, Right, Left, Footer, FooterTab, Button, Text, Badge, Card, CardItem} from 'native-base';
 import Tab1 from './tabs/tab1';
 import Tab2 from './tabs/tab2';
@@ -16,7 +17,7 @@ export default class TabsExample extends Component {
         <Header style={{ backgroundColor: '#FA255E' }} hasTabs>
         <Left />
         <Body>
-            <Title style={{ color: '#F8E5E5' }}>Info Riot</Title>
+            <Title style={{ color: '#f8e5e5'}}>Info Riot</Title>
         </Body>
         <Right />
         </Header>
