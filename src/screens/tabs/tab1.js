@@ -2,7 +2,7 @@
 /* eslint-disable prettier/prettier */
 
 import React, {Component} from 'react';
-import {Image, ImageBackground, Dimensions, StyleSheet } from 'react-native';
+import {Image, Dimensions, StyleSheet, Alert, View, ActivityIndicator } from 'react-native';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 
 import {
@@ -10,21 +10,22 @@ import {
   Header,
   Content,
   List,
-  ListItem,
-  Thumbnail,
   Text,
   H3,
-  Left,
-  Body,
-  Right,
-  Button,
   Card,
   CardItem,
   Icon,
-  H2
+  H2,
+  Left,
+  Body,
+  Thumbnail
 } from 'native-base';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faHeart, faStarOfLife} from '@fortawesome/free-solid-svg-icons';
+
+import { getArticles } from '../../service/news';
+import DataItem from '../../component/dataItem';
+
 
 const deviceWidth = Dimensions.get("window").width;
 
@@ -32,88 +33,80 @@ export default class Tab1 extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { topNews: [] };
+    this.state = { isLoading: true, data: null };
   }
 
   componentDidMount() {
-      fetch('https://newsapi.org/v2/top-headlines?country=us&apiKey=b01b6d6b77414a63807159aba9a2786e')
-      .then(response => response.json())
-      .then(data => {
-        this.setState({ topNews: data.articles });
-        console.log(data.articles);
-      });
+      getArticles().then(data => {
+        this.setState({
+          isLoading: false,
+          data: data,
+        });
+      }, error => {
+        Alert.alert('Error', 'Something went wrong!');
+      }
+      );
 }
 
   render() {
+    console.log(this.state.data);
+
+        var first =  function(array, n) {
+      if (array == null) 
+      return void 0;
+    if (n == null) 
+      return array[0];
+    if (n < 0)
+      return [];
+    return array.slice(0, n);
+  };
+
+    let view = this.state.isLoading ? (
+      <View>
+      <ActivityIndicator animating={this.state.isLoading}/>
+      <Text style={{marginTop: 10}}>Please Wait...</Text>
+      </View>
+    ) : (
+      <List
+          dataArray={this.state.data.slice(1)}
+          renderRow={(item) => {
+            return <DataItem data={item} />;
+          }}
+          />
+    );
+
+    let featured = this.state.isLoading ? (
+      <View>
+      <ActivityIndicator animating={this.state.isLoading}/>
+      <Text style={{marginTop: 10}}>Please Wait...</Text>
+      </View>
+    ) : (
+      <Card style={{flex: 0, marginLeft: 10, marginRight: 10}}>
+            <CardItem>
+              <Left>
+                <Body>
+                  <Text>{first(this.state.data).source.name}</Text>
+                  <Text note>{first(this.state.data).publishedAt}</Text>
+                </Body>
+              </Left>
+            </CardItem>
+            <CardItem>
+              <Body>
+                <Image source={{uri: first(this.state.data).urlToImage}} style={{height: 200, width: 370, flex: 1, alignSelf: 'center', resizeMode: 'cover' }}/>
+                <Text style={{ textDecorationLine: 'underline', color: '#FA255E', fontSize: 16, marginTop: 10}}>{first(this.state.data).title}</Text>
+                <Text numberOfLines={3} style={{marginBottom: 5}}>
+                  {first(this.state.data).content}
+                </Text>
+              </Body>
+            </CardItem>
+            </Card>
+    );
+
     return (
       <Container style={styles.container}>
             <Content padder>
-            <Grid>
-            <Row>
-            <Col style={{ height: 300 }}>
-                <Image
-                   source={{
-                    uri: 'http://code.gabriellealexa.com/icons/28.jpg',
-                  }}
-                  style={{
-                    height: 220,
-                    width: 185,
-                    borderRadius: 20,
-                    alignSelf: 'center',
-                    marginVertical: 5,
-                  }} />
-                  <Text note>Mashable</Text>
-                <Text style={{ alignSelf: 'center' }}>Is #MeToo Almost Over? Experts Weigh In</Text>
-                </Col>
-                <Col style={{ height: 150 }}>
-        <Image
-                  source={{
-                    uri: 'http://code.gabriellealexa.com/icons/23.jpg',
-                  }}
-                  style={{
-                    height: 220,
-                    width: 185,
-                    borderRadius: 20,
-                    alignSelf: 'center',
-                    marginVertical: 5,
-                  }}
-                />
-                <Text note>Vice</Text>
-                <Text style={{ alignSelf: 'center' }}>What Ariana Grande's Bisexual Anthem Means</Text>
-                </Col>
-                </Row>
-                </Grid>
-                <H2 style={styles.top}>Top News</H2>
-          <List>
-            <ListItem thumbnail>
-              <Left>
-                <Thumbnail square source={{ uri: 'http://code.gabriellealexa.com/icons/20.jpg' }} />
-              </Left>
-              <Body>
-                <Text>Louis C.K. Is A Terrible Human</Text>
-                <Text note numberOfLines={3}>This is not up for debate. And he continues to avoid accountability, it's tragic.</Text>
-              </Body>
-              <Right>
-                <Button transparent>
-                  <Text>View</Text>
-                </Button>
-              </Right>
-            </ListItem>
-            <ListItem thumbnail>
-              <Left>
-                <Thumbnail square source={{ uri: 'http://code.gabriellealexa.com/icons/07.jpg' }} />
-              </Left>
-              <Body>
-                <Text>This Woman Built A Media Brand Overnight</Text>
-                <Text note numberOfLines={3}>Now, she's redesigning what it means to be a leader during COVID-19.</Text>
-              </Body>
-              <Right>
-                <Button transparent>
-                  <Text>View</Text>
-                </Button>
-              </Right>
-            </ListItem>
-          </List>
+            {featured}
+          {view}
         </Content>
       </Container>
     );

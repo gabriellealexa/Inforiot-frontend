@@ -13,10 +13,10 @@ export default class TabsExample extends Component {
   render() {
     return (
       <Container>
-        <Header style={{ backgroundColor: '#009387' }} hasTabs>
+        <Header style={{ backgroundColor: '#FA255E' }} hasTabs>
         <Left />
         <Body>
-            <Title>Info Riot</Title>
+            <Title style={{ color: '#F8E5E5' }}>Info Riot</Title>
         </Body>
         <Right />
         </Header>
